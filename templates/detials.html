@@ -1,0 +1,99 @@
+{% extends 'baselogin.html' %}
+{% block title %} Patient details{% endblock title %}
+{% block form %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h1>Patient Details</h1>
+            <div class="card p-3">
+                <div style="overflow-y: auto;">
+                    <table class="table table-dark" style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th colspan="2" style="text-align: center;">DETAILS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="col">Srf Id</th>
+                                <td>{{data.srfid}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Bed Type</th>
+                                <td>{{data.bedtype}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Hospital Code</th>
+                                <td>{{data.hcode}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Oxygen Level</th>
+                                <td>{{data.spo2}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Patient Name</th>
+                                <td>{{data.pname}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Patient Phone number</th>
+                                <td>{{data.pphone}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Patient Address</th>
+                                <td>{{data.paddress}}</td>
+                            </tr>
+                            <!-- Add more rows and cells as needed -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-center mt-3">
+                    <!-- <button type="button" class="btn btn-primary"
+                    onclick="update('{{data.srfid}}')"
+                    >Update</button> -->
+                    <button
+                    onclick="deleteItem('{{data.srfid}}')"
+                    type="button" class="btn btn-danger"
+                   
+                    >Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+     async function  deleteItem(itemId) {
+      //  console.log(itemId,"idididididiidi");
+      try {
+            const response = await fetch(`http://127.0.0.1:5000/delete_booking/${itemId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Add any other headers if needed
+                },
+                // body: JSON.stringify({ /* Add any data to be sent in the request body */ }),
+            });
+            // console.log(response);
+
+            if (response.ok) {
+                  window.location.reload()
+
+                console.log(`Successfully deleted item with ID: ${itemId}`);
+                // Add any additional actions after successful deletion
+            } else {
+                console.error('Failed to delete item');
+                // Handle error, if needed
+            }
+      } catch (error) {
+       console.log(error);     
+      }
+      }
+
+const update= async(srfid)=>{
+ localStorage.setItem("id",srfid);
+ window.location.href="http://127.0.0.1:5000/slotbooking"
+}
+
+    </script>
+
+{% endblock form %}

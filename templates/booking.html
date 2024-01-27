@@ -1,0 +1,196 @@
+<head>
+  
+  <link rel="icon" href="/static/assets/img/hms-letter-logo-design-in-illustration-logo-calligraphy-designs-for-logo-poster-invitation-etc-vector.png">
+  <!-- <link rel="stylesheet" href="static/assets/css/styles.css"> -->
+  <title>Slot Booking</title>
+</head>
+{% extends "navbar.html" %} 
+
+
+
+{% block body %}
+<br />
+<br />
+<br />
+<br />
+<br />
+
+<div class="container mt-4">
+  <div class="display-4 text-center text-info">Book Bed Slot</div>
+  <br />
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card">
+        {% include "message.html" %}
+        <h4 class="text-center text-success">H M S</h4>
+        <div class="card-body bg-light">
+          <form action="/slotbooking" method="post">
+            <div class="form-group">
+              <input
+                type="text"
+                class="form-control mt-2"
+                name="srfid"
+                value="{{current_user.srfid}}"
+                readonly
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <select id="bedtype" name="bedtype" class="form-control" required>
+                <option selected>Choose Bed Type</option>
+                <option value="NormalBed">Normal Bed</option>
+                <option value="HICUBed">HICU Bed</option>
+                <option value="ICUBed">ICU Bed</option>
+                <option value="VENTILATORBed">VENTILATOR Bed</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <small> Select hospitalcode by looking the availablity of beds in table right side</small>
+              <select id="hcode" name="hcode" class="form-control" required>
+                <option value="none">Select Hospital Code </option>
+               {% for i in query1 %}
+               
+               <option value="{{i.hcode}}">{{i.hcode}}</option>
+               
+               {% endfor %}
+            </div>
+            <div class="form-group">
+              <input
+                type="number"
+                class="form-control mt-2"
+                name="spo2"
+                value=""
+                placeholder="Oxygen Level "
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <input
+                type="text"
+                class="form-control mt-2"
+                name="pname"
+                value=""
+                placeholder="Patient Name"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <input
+                type="text"
+                class="form-control mt-2"
+                name="pphone"
+                placeholder="Patient Phone Number"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <input
+                type="text"
+                class="form-control mt-2"
+                name="paddress"
+                placeholder="Patient Address"
+             
+                required
+              />
+            </div>
+
+            <br />
+            <button class="btn btn-info" type="submit">Book Slot</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="col-md-8">
+    
+    <table class="table table-dark">
+  <thead>
+  <h3 class="text-center text-white bg-dark">Available Beds</h3>
+    <tr>
+      
+      <th scope="col">Hospital Code</th>
+      <th scope="col">Hospital Name</th>
+      <th scope="col">Normal Bed</th>
+      <th scope="col">HICU Bed</th>
+      <th scope="col">I.C.U Bed</th>
+      <th scope="col">Ventilator Bed</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for post in query %}
+   <tr>
+      <td>{{post.hcode}}</td>
+      <td>{{post.hname}}</td>
+      <td>{{post.normalbed}}</td>
+      <td>{{post.hicubed}}</td>
+      <td>{{post.icubed}}</td>
+      <td>{{post.vbed}}</td>
+    </tr>
+   
+  {% endfor %}
+   
+  </tbody>
+</table>
+    
+    </div>
+  </div>
+</div>
+<!-- <script>
+  document.addEventListener('DOMContentLoaded', async function () {
+    // Code to run on page load
+    let id = localStorage.getItem("id") || "";
+    if(id){
+     
+      try {
+                const response = await fetch(`http://127.0.0.1:5000/pdetails`, {
+                    method: 'GET',
+                });
+
+                if (response.ok) {
+                    const htmlString = await response.text();
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(htmlString, 'text/html');
+
+                    // Helper function to find an element containing specific text
+                    const findElementByTextContent = (container, text) => {
+                        const elements = container.querySelectorAll('*');
+                        for (const element of elements) {
+                            if (element.textContent.includes(text)) {
+                                return element;
+                            }
+                        }
+                        return null;
+                    };
+
+                    // Extract data from the HTML document
+                    const srfidElement = findElementByTextContent(doc, 'Srf Id');
+                    const bedTypeElement = findElementByTextContent(doc, 'Bed Type');
+                    const hcodeElement = findElementByTextContent(doc, 'Hospital Code');
+                    const spo2Element = findElementByTextContent(doc, 'Oxygen Level');
+                    const pnameElement = findElementByTextContent(doc, 'Patient Name');
+                    const pphoneElement = findElementByTextContent(doc, 'Patient Phone number');
+                    const paddressElement = findElementByTextContent(doc, 'Patient Address');
+
+                    // Populate input fields with extracted data
+                    document.querySelector('input[name="srfid"]').value = srfidElement ? srfidElement.nextElementSibling?.innerText || '' : '';
+                    document.querySelector('select[name="bedtype"]').value = bedTypeElement ? bedTypeElement.nextElementSibling?.innerText || '' : '';
+                    document.querySelector('select[name="hcode"]').value = hcodeElement ? hcodeElement.nextElementSibling?.innerText || '' : '';
+                    document.querySelector('input[name="spo2"]').value = spo2Element ? spo2Element.nextElementSibling?.innerText || '' : '';
+                    document.querySelector('input[name="pname"]').value = pnameElement ? pnameElement.nextElementSibling?.innerText || '' : '';
+                    document.querySelector('input[name="pphone"]').value = pphoneElement ? pphoneElement.nextElementSibling?.innerText || '' : '';
+                    document.querySelector('input[name="paddress"]').value = paddressElement ? paddressElement.nextElementSibling?.innerText || '' : '';
+                }
+            } catch (error) {
+                console.log(error);
+            }
+
+}
+  });
+</script> -->
+{% endblock body %}
